@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Klasyfikator win</title>
+</head>
+<body>
+    <h2>Wprowadź dane chemiczne wina</h2>
+    <form method="POST">
+
+        <label>Kwasowość lotna: <span id="volValue">{{ vol }}</span></label><br>
+        <div style="display: flex; align-items: center; gap: 8px; width: 340px;">
+            <span>0.08</span>
+            <input type="range" name="volatile_acidity" min="0.08" max="1.58" step="0.01" value="{{ vol }}"
+                oninput="volValue.innerText = this.value" style="flex: 1;">
+            <span>1.58</span>
+        </div><br>
+
+        <label>Całkowita zawartość dwutlenku siarki: <span id="sulfurValue">{{ sulfur }}</span></label><br>
+        <div style="display: flex; align-items: center; gap: 8px; width: 340px;">
+            <span>6.0</span>
+            <input type="range" name="total_sulfur_dioxide" min="6.0" max="440.0" step="0.1" value="{{ sulfur }}"
+                oninput="sulfurValue.innerText = this.value" style="flex: 1;">
+            <span>440.0</span>
+        </div><br>
+
+        <label>Chlorki: <span id="chlorValue">{{ chlor }}</span></label><br>
+        <div style="display: flex; align-items: center; gap: 8px; width: 340px;">
+            <span>0.009</span>
+            <input type="range" name="chlorides" min="0.009" max="0.611" step="0.001" value="{{ chlor }}"
+                oninput="chlorValue.innerText = this.value" style="flex: 1;">
+            <span>0.611</span>
+        </div><br>
+
+        <label>Siarczany: <span id="sulphValue">{{ sulph }}</span></label><br>
+       <div style="display: flex; align-items: center; gap: 8px; width: 340px;">
+            <span>0.22</span>
+            <input type="range" name="sulphates" min="0.22" max="2.0" step="0.01" value="{{ sulph }}"
+                oninput="sulphValue.innerText = this.value" style="flex: 1;">
+            <span>2.0</span>
+        </div><br>
+
+        <input type="submit" value="Klasyfikuj">
+    </form>
+
+    {% if predictions %}
+    <h3>Wyniki klasyfikacji:</h3>
+    <ul>
+        {% for model, wynik in predictions.items() %}
+            <li>
+                <strong><a href="/{{ model.lower().replace(' ', '_') }}">{{ model }}</a>:</strong> {{ wynik }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+</body>
+</html>
