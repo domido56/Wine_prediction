@@ -1,15 +1,15 @@
 from flask import Flask, render_template, request
-import joblib
-import numpy as np
+from ml.loader import get_full_dataset, load_models, get_test_data, features, target
+from ml.visualizer import plot_conf_matrix, plot_feature_importance, generate_classification_report
 
 app = Flask(__name__)
 
-# Wczytanie modeli i skalera
-rf_model = joblib.load("models/rf.pkl")
-knn_model = joblib.load("models/knn.pkl")
-svm_model = joblib.load("models/svm.pkl")
-scaler = joblib.load("models/scaler.pkl")
-
+rf_model, knn_model, svm_model, scaler = load_models()
+model_dict = {
+    "random_forest": rf_model,
+    "knn": knn_model,
+    "svm": svm_model
+}
 
 @app.route("/", methods=["GET", "POST"])
 def predict():
@@ -35,6 +35,25 @@ def predict():
             predictions[name] = "Czerwone" if result == 1 else "Białe"
 
     return render_template("form.html", predictions=predictions, vol=vol, sulfur=sulfur, chlor=chlor, sulph=sulph)
+
+@app.route("/<model_name>")
+def model_detail(model_name):
+    model = model_dict.get(model_name)
+    if not model:
+        return "Model nieznany", 404
+    
+    X_test, y_test = get_test_data()
+    y_pred = model.predict(X_test)
+
+    cm_img = plot_conf_matrix(y_test, y_pred)
+    fi_img = plot_feature_importance(model, features)
+    report = generate_classification_report(y_test, y_pred)
+
+    return render_template("model_detail.html", 
+                           model_name=model_name.upper(), 
+                           report=report,
+                           confusion_matrix_img=cm_img,
+                           feature_importance_img=fi_img)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Szczegóły modelu {{ model_name }}</title>
+</head>
+<body>
+    <h2>Model: {{ model_name }}</h2>
+
+    <h3>Raport klasyfikacji:</h3>
+    <pre>{{ report }}</pre>
+
+    <h3>Macierz pomyłek:</h3>
+    <img src="data:image/png;base64,{{ confusion_matrix_img }}" alt="Confusion matrix"><br><br>
+
+    <h3>Ważność cech:</h3>
+    <img src="data:image/png;base64,{{ feature_importance_img }}" alt="Feature importance"><br><br>
+
+    <a href="/">Wróć do klasyfikatora</a>
+</body>
+</html>
