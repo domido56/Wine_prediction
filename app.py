@@ -5,10 +5,17 @@ from ml.visualizer import cechy, plot_conf_matrix, plot_feature_importance, gene
 app = Flask(__name__)
 
 rf_model, knn_model, svm_model, scaler = load_models()
+
 model_dict = {
     "random_forest": rf_model,
     "knn": knn_model,
     "svm": svm_model
+}
+
+display_names = {
+    "random_forest": "Random Forest",
+    "knn": "K-Nearest Neighbor",
+    "svm": "Support Vector Machine"
 }
 
 @app.route("/", methods=["GET", "POST"])
@@ -30,15 +37,15 @@ def predict():
 
         X = scaler.transform([[vol, sulfur, chlor, sulph]])
         for name, model in {
-            "Random Forest": rf_model,
-            "KNN": knn_model,
-            "SVM": svm_model
+            "random_forest": rf_model,
+            "knn": knn_model,
+            "svm": svm_model
         }.items():
             result = model.predict(X)[0]
             predictions[name] = "Czerwone" if result == 1 else "Białe"
 
     return render_template("form.html", predictions=predictions, vol=vol, sulfur=sulfur, chlor=chlor, sulph=sulph,
-                           scatter_plot=image_base64)
+                           scatter_plot=image_base64, display_names=display_names)
 
 @app.route("/<model_name>")
 def model_detail(model_name):
@@ -49,15 +56,15 @@ def model_detail(model_name):
     X_test, y_test = get_test_data()
     y_pred = model.predict(X_test)
 
-    cm_img = plot_conf_matrix(y_test, y_pred)
-    fi_img = plot_feature_importance(model, features)
+    cm_img = plot_conf_matrix(y_test, y_pred, model_name)
+    #fi_img = plot_feature_importance(model, features)
     report = generate_classification_report(y_test, y_pred)
 
     return render_template("model_detail.html", 
-                           model_name=model_name.upper(), 
+                           model_name=display_names.get(model_name, model_name), 
                            report=report,
-                           confusion_matrix_img=cm_img,
-                           feature_importance_img=fi_img)
+                           confusion_matrix_img=cm_img)
+                           #feature_importance_img=fi_img)
 
 
 if __name__ == "__main__":

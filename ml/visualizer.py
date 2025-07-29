@@ -37,10 +37,19 @@ def cechy(vol, sulfur, chlor, sulph):
     return convert_to_base64(fig)
 
 
-def plot_conf_matrix(y_true, y_pred):
+def plot_conf_matrix(y_true, y_pred, model_name=None):
     cm = confusion_matrix(y_true, y_pred)
+
+    cmap = "Blues"
+    if model_name == "random_forest":
+        cmap = "PuBuGn"
+    elif model_name == "knn":
+        cmap = "YlOrBr"
+    elif model_name == "svm":
+        cmap = "YlGn"    
+
     fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
+    sns.heatmap(cm, annot=True, fmt='d', cmap=cmap, ax=ax)
     ax.set_xlabel('Predykcja')
     ax.set_ylabel('Rzeczywista')
     ax.set_title('Macierz pomyłek')

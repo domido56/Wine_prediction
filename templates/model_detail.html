@@ -4,17 +4,20 @@
     <title>Szczegóły modelu {{ model_name }}</title>
 </head>
 <body>
-    <h2>Model: {{ model_name }}</h2>
+    <h2 style="font-size: 28px; font-weight: bold; color: #000000;">{{ model_name }}</h2>
 
-    <h3>Raport klasyfikacji:</h3>
-    <pre>{{ report }}</pre>
+    <div style="display: flex; gap: 40px; align-items: flex-start;">
 
-    <h3>Macierz pomyłek:</h3>
-    <img src="data:image/png;base64,{{ confusion_matrix_img }}" alt="Confusion matrix"><br><br>
+        <div style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; background-color: #fdfdfd; margin-left: 8px">
+            <h3>Raport klasyfikacji:</h3>
+            <pre>{{ report }}</pre>
+        </div>
+            
+        <div style="margin-left: 120px">
+            <img src="data:image/png;base64,{{ confusion_matrix_img }}" alt="Confusion matrix"><br><br>
+        </div>
 
-    <h3>Ważność cech:</h3>
-    <img src="data:image/png;base64,{{ feature_importance_img }}" alt="Feature importance"><br><br>
-
+    </div>
     <a href="/">Wróć do klasyfikatora</a>
 </body>
 </html>
