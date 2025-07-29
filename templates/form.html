@@ -53,5 +53,10 @@
     </ul>
 {% endif %}
 
+    {% if scatter_plot %}
+    <h3>Wizualizacja wybieranych danych na tle zbioru:</h3>
+    <img src="data:image/png;base64,{{ scatter_plot }}" alt="Wykres">
+{% endif %}    
+
 </body>
 </html>

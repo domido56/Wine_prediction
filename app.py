@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from ml.loader import get_full_dataset, load_models, get_test_data, features, target
-from ml.visualizer import plot_conf_matrix, plot_feature_importance, generate_classification_report
+from ml.visualizer import cechy, plot_conf_matrix, plot_feature_importance, generate_classification_report
 
 app = Flask(__name__)
 
@@ -18,12 +18,15 @@ def predict():
     sulfur = 223.0
     chlor = 0.3
     sulph = 1.0
+    image_base64 = None
     
     if request.method == "POST":
         vol = float(request.form["volatile_acidity"])
         sulfur = float(request.form["total_sulfur_dioxide"])
         chlor = float(request.form["chlorides"])
         sulph = float(request.form["sulphates"])
+
+        image_base64 = cechy(vol, sulfur, chlor, sulph)
 
         X = scaler.transform([[vol, sulfur, chlor, sulph]])
         for name, model in {
@@ -34,7 +37,8 @@ def predict():
             result = model.predict(X)[0]
             predictions[name] = "Czerwone" if result == 1 else "Białe"
 
-    return render_template("form.html", predictions=predictions, vol=vol, sulfur=sulfur, chlor=chlor, sulph=sulph)
+    return render_template("form.html", predictions=predictions, vol=vol, sulfur=sulfur, chlor=chlor, sulph=sulph,
+                           scatter_plot=image_base64)
 
 @app.route("/<model_name>")
 def model_detail(model_name):
